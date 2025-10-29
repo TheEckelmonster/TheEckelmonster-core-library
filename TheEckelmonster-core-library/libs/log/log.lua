@@ -1,7 +1,6 @@
 local Log_Constants = require("libs.log.log-constants")
 local Log_Constants_Functions = require("libs.log.log-constants-functions")
 
--- local _Settings_Service = nil
 local _Storage_Ref = nil
 local _Traceback_Setting_Name = nil
 local _Do_Not_Print_Setting_Name = nil

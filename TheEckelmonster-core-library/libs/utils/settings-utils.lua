@@ -3,7 +3,7 @@ local String_Utils = require("libs.utils.string-utils")
 
 local settings_utils = {}
 
---[[ Sets order of the provided settings to match the order they appear in the provided array
+--[[ Sets the order property of the provided settings to match the order they appear in the provided array
     -> returns a table containing the ordered array, and a dictionary by name of the provided settings
 ]]
 function settings_utils.order_settings(data)
