@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 2025-11-05
+  Bug Fixes:
+    - Fixed data_utils using the mods default settings and not the provided ones for default values
+    - Fixed a bug when loading to the main menu when all-seeing-satellite and the toolbars-mod are both installed
+  Misc:
+    - Added some base data objects and structures
+---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2025-10-28
   Minor Features:

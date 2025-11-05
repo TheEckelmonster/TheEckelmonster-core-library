@@ -1,5 +1,5 @@
 $mod = "TheEckelmonster-core-library"
-$version = "0.1.0"
+$version = "0.1.1"
 
 $7ZipPath = "D:/7-Zip/7z.exe"
 
