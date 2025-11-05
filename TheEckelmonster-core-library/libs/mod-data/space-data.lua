@@ -5,6 +5,7 @@ local String_Utils = require("libs.utils.string-utils")
 
 -- MULTISURFACE_BASE_DISTANCE_MODIFIER
 local get_multisurface_base_distance_modifier = function(params)
+
     local return_val = Data_Utils.get_startup_setting({ setting = Startup_Settings_Constants.settings.MULTISURFACE_BASE_DISTANCE_MODIFIER.name })
 
     if (params and type(params) ~= "table") then return return_val end
@@ -17,12 +18,12 @@ end
 local space_data = {}
 
 function space_data.create(params)
-
     if (not params or type(params) ~= "table") then params = {} end
     if (params and not String_Utils.is_string_valid(params.name)) then params.name = Constants.mod_name_abbreviation .. ".space-data" end
     if (params and String_Utils.is_string_valid(params.data_type)) then params.data_type = nil end
     if (params and type(params.default_distance_modifier) ~= "number") then params.default_distance_modifier = get_multisurface_base_distance_modifier() end
     if (params and type(params.default_distance_modifier) == "number" and params.default_distance_modifier <= 0) then params.default_distance_modifier = get_multisurface_base_distance_modifier() end
+    if (params and type(params.default_distance_modifier) ~= "number") then params.default_distance_modifier = 3000 end
 
     local mod_data = {
         type = "mod-data",

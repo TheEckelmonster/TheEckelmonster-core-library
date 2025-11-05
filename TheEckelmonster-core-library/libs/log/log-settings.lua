@@ -46,8 +46,10 @@ function log_settings.create(params)
         local order_2 = math.floor((k - 1) / 26) % 26
         local order_3 = math.floor((k - 1) / 676) % 26
 
-        local order = Constants.order_struct.order_array[order_3] ..
-        Constants.order_struct.order_array[order_2] .. Constants.order_struct.order_array[order_1]
+        local order =   Constants.order_struct.order_array[order_3]
+                     .. Constants.order_struct.order_array[order_2]
+                     .. Constants.order_struct.order_array[order_1]
+
         v.order = order
     end
 

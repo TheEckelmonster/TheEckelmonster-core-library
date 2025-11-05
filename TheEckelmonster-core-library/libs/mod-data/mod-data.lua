@@ -8,14 +8,14 @@ function mod_data.create(params)
     if (params and not String_Utils.is_string_valid(params.name)) then params.name = Constants.mod_name_abbreviation .. ".mod-data" end
     if (params and String_Utils.is_string_valid(params.data_type)) then params.data_type = nil end
 
-    local mod_data = {
+    local new_mod_data = {
         type = "mod-data",
         name = params and params.name,
         data_type = params and params.data_type,
         data = {},
     }
 
-    return mod_data
+    return new_mod_data
 end
 
 return mod_data
