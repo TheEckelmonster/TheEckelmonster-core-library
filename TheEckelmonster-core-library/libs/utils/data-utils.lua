@@ -78,6 +78,7 @@ function data_utils.create_custom_tooltip_quality_effects_atomic(params)
     local entity_name = name
     if (name == "atomic-rocket") then entity_name = "atomic-bomb" end
 
+    local _type = type
     local type = params.type
 
     local raw = data.raw[type][name]
@@ -232,215 +233,217 @@ function data_utils.create_custom_tooltip_quality_effects_atomic(params)
     local quality_level = "normal"
     while quality_level ~= nil and object_names.dictionary[prefix .. quality_level] do
         order = 1
-        for i = 1, #target_effects_dictionary[quality_level], 1 do
-            if (target_effects_dictionary[quality_level][i].type == "destroy-cliffs") then
-                if (not quality_values[quality_level]) then quality_values[quality_level] = {} end
+        if (target_effects_dictionary and _type(target_effects_dictionary[quality_level]) == "table") then
+            for i = 1, #target_effects_dictionary[quality_level], 1 do
+                if (target_effects_dictionary[quality_level][i].type == "destroy-cliffs") then
+                    if (not quality_values[quality_level]) then quality_values[quality_level] = {} end
 
-                local num_val = target_effects_dictionary[quality_level][i].radius
-                local suffix = ""
-                local directive = "%d"
-                if (num_val > 1000 ^ 3) then
-                    suffix = "B"
-                    num_val = num_val / (1000 ^ 3)
-                elseif (num_val > 1000 ^ 2) then
-                    suffix = "M"
-                    num_val = num_val / (1000 ^ 2)
-                elseif (num_val > 1000 ^ 1) then
-                    suffix = "k"
-                    num_val = num_val / (1000 ^ 1)
-                end
-
-                if (num_val % 1 ~= 0) then
-                    if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
-                        directive = "%.2f"
-                    else
-                        directive = "%.1f"
+                    local num_val = target_effects_dictionary[quality_level][i].radius
+                    local suffix = ""
+                    local directive = "%d"
+                    if (num_val > 1000 ^ 3) then
+                        suffix = "B"
+                        num_val = num_val / (1000 ^ 3)
+                    elseif (num_val > 1000 ^ 2) then
+                        suffix = "M"
+                        num_val = num_val / (1000 ^ 2)
+                    elseif (num_val > 1000 ^ 1) then
+                        suffix = "k"
+                        num_val = num_val / (1000 ^ 1)
                     end
-                end
 
-                quality_values[quality_level][order] =
-                {
-                    name = { "quality-destroy-cliffs.aoe-size" },
-                    value = { "atomic-bomb-placeholder.aoe-size", string.format(directive, num_val) .. suffix, "", }
-                }
-                order = order + 1
-
-                quality_values[quality_level][order] =
-                {
-                    name = { "quality-destroy-cliffs.destroy-cliffs" },
-                    value = ""
-                }
-                order = order + 1
-
-            elseif (target_effects_dictionary[quality_level][i].type == "damage") then
-                if (not quality_values[quality_level]) then quality_values[quality_level] = {} end
-
-                local num_val = target_effects_dictionary[quality_level][i].damage.amount
-                local suffix = ""
-                local directive = "%d"
-                if (num_val > 1000 ^ 3) then
-                    suffix = "B"
-                    num_val = num_val / (1000 ^ 3)
-                elseif (num_val > 1000 ^ 2) then
-                    suffix = "M"
-                    num_val = num_val / (1000 ^ 2)
-                elseif (num_val > 1000 ^ 1) then
-                    suffix = "k"
-                    num_val = num_val / (1000 ^ 1)
-                end
-
-                if (num_val % 1 ~= 0) then
-                    if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
-                        directive = "%.2f"
-                    else
-                        directive = "%.1f"
+                    if (num_val % 1 ~= 0) then
+                        if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
+                            directive = "%.2f"
+                        else
+                            directive = "%.1f"
+                        end
                     end
-                end
 
-                quality_values[quality_level][order] =
-                {
-                    name = { "quality-damage.damage" },
-                    value = { "atomic-bomb-placeholder.damage", string.format(directive, num_val) .. suffix, "", { "damage-type." .. target_effects_dictionary[quality_level][i].damage.type } }
-                }
-
-                order = order + 1
-            elseif (target_effects_dictionary[quality_level][i].type == "nested-result") then
-                if (not quality_values[quality_level]) then quality_values[quality_level] = {} end
-
-                local projectile = ""
-                if (target_effects_dictionary[quality_level][i]["nested-result"][entity_name .. "-ground-zero-projectile"]) then
-                    projectile = entity_name .. "-ground-zero-projectile"
-                elseif (target_effects_dictionary[quality_level][i]["nested-result"][entity_name .. "-wave"]) then
-                    projectile = entity_name .. "-wave"
-                end
-
-                local num_val = target_effects_dictionary[quality_level][i]["nested-result"][projectile].radius
-                local suffix = ""
-                local directive = "%d"
-                if (num_val > 1000 ^ 3) then
-                    suffix = "B"
-                    num_val = num_val / (1000 ^ 3)
-                elseif (num_val > 1000 ^ 2) then
-                    suffix = "M"
-                    num_val = num_val / (1000 ^ 2)
-                elseif (num_val > 1000 ^ 1) then
-                    suffix = "k"
-                    num_val = num_val / (1000 ^ 1)
-                end
-
-                if (num_val % 1 ~= 0) then
-                    if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
-                        directive = "%.2f"
-                    else
-                        directive = "%.1f"
-                    end
-                end
-
-                quality_values[quality_level][order] =
-                {
-                    name = { "quality-nested-result.aoe-size-1", },
-                    value = { "atomic-bomb-placeholder.aoe-size", string.format(directive, num_val) .. suffix, },
-                }
-                order = order + 1
-
-                num_val = target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.radius
-                suffix = ""
-                directive = "%d"
-                if (num_val > 1000 ^ 3) then
-                    suffix = "B"
-                    num_val = num_val / (1000 ^ 3)
-                elseif (num_val > 1000 ^ 2) then
-                    suffix = "M"
-                    num_val = num_val / (1000 ^ 2)
-                elseif (num_val > 1000 ^ 1) then
-                    suffix = "k"
-                    num_val = num_val / (1000 ^ 1)
-                end
-
-                if (num_val % 1 ~= 0) then
-                    if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
-                        directive = "%.2f"
-                    else
-                        directive = "%.1f"
-                    end
-                end
-
-                quality_values[quality_level][order] =
-                {
-                    name = { "quality-nested-result.aoe-size-2", },
-                    value = { "atomic-bomb-placeholder.aoe-size", string.format(directive, num_val) .. suffix, },
-                }
-                order = order + 1
-
-                num_val = target_effects_dictionary[quality_level][i]["nested-result"][projectile].repeat_count
-                suffix = ""
-                directive = "%d"
-                if (num_val > 1000 ^ 3) then
-                    suffix = "B"
-                    num_val = num_val / (1000 ^ 3)
-                elseif (num_val > 1000 ^ 2) then
-                    suffix = "M"
-                    num_val = num_val / (1000 ^ 2)
-                elseif (num_val > 1000 ^ 1) then
-                    suffix = "k"
-                    num_val = num_val / (1000 ^ 1)
-                end
-
-                if (num_val % 1 ~= 0) then
-                    if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
-                        directive = "%.2f"
-                    else
-                        directive = "%.1f"
-                    end
-                end
-
-                local target_effects = target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects
-                local damage = target_effects.damage
-                if (not damage) then
-                    damage = target_effects[1] and target_effects[1].damage
-                end
-                if (not damage) then log(serpent.block(target_effects)); goto continue end
-                local num_val_2 = damage.amount
-                local suffix_2 = ""
-                local directive_2 = "%d"
-                if (num_val_2 > 1000 ^ 3) then
-                    suffix_2 = "B"
-                    num_val_2 = num_val_2 / (1000 ^ 3)
-                elseif (num_val_2 > 1000 ^ 2) then
-                    suffix_2 = "M"
-                    num_val_2 = num_val_2 / (1000 ^ 2)
-                elseif (num_val_2 > 1000 ^ 1) then
-                    suffix_2 = "k"
-                    num_val_2 = num_val_2 / (1000 ^ 1)
-                end
-
-                if (num_val_2 % 1 ~= 0) then
-                    if (((num_val_2 % 0.1) - (num_val_2 % 0.01)) ~= 0) then
-                        directive_2 = "%.2f"
-                    else
-                        directive_2 = "%.1f"
-                    end
-                end
-
-                if (target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects.type) then
                     quality_values[quality_level][order] =
                     {
-                        name = { "quality-nested-result.damage", },
-                        value = { "atomic-bomb-placeholder.damage-mult", string.format(directive, num_val) .. suffix, string.format(directive_2, num_val_2) .. suffix_2, "", { "damage-type." .. target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects.damage.type } },
+                        name = { "quality-destroy-cliffs.aoe-size" },
+                        value = { "atomic-bomb-placeholder.aoe-size", string.format(directive, num_val) .. suffix, "", }
                     }
                     order = order + 1
-                elseif (#target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects > 0) then
-                    for k, v in pairs(target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects) do
+
+                    quality_values[quality_level][order] =
+                    {
+                        name = { "quality-destroy-cliffs.destroy-cliffs" },
+                        value = ""
+                    }
+                    order = order + 1
+
+                elseif (target_effects_dictionary[quality_level][i].type == "damage") then
+                    if (not quality_values[quality_level]) then quality_values[quality_level] = {} end
+
+                    local num_val = target_effects_dictionary[quality_level][i].damage.amount
+                    local suffix = ""
+                    local directive = "%d"
+                    if (num_val > 1000 ^ 3) then
+                        suffix = "B"
+                        num_val = num_val / (1000 ^ 3)
+                    elseif (num_val > 1000 ^ 2) then
+                        suffix = "M"
+                        num_val = num_val / (1000 ^ 2)
+                    elseif (num_val > 1000 ^ 1) then
+                        suffix = "k"
+                        num_val = num_val / (1000 ^ 1)
+                    end
+
+                    if (num_val % 1 ~= 0) then
+                        if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
+                            directive = "%.2f"
+                        else
+                            directive = "%.1f"
+                        end
+                    end
+
+                    quality_values[quality_level][order] =
+                    {
+                        name = { "quality-damage.damage" },
+                        value = { "atomic-bomb-placeholder.damage", string.format(directive, num_val) .. suffix, "", { "damage-type." .. target_effects_dictionary[quality_level][i].damage.type } }
+                    }
+
+                    order = order + 1
+                elseif (target_effects_dictionary[quality_level][i].type == "nested-result") then
+                    if (not quality_values[quality_level]) then quality_values[quality_level] = {} end
+
+                    local projectile = ""
+                    if (target_effects_dictionary[quality_level][i]["nested-result"][entity_name .. "-ground-zero-projectile"]) then
+                        projectile = entity_name .. "-ground-zero-projectile"
+                    elseif (target_effects_dictionary[quality_level][i]["nested-result"][entity_name .. "-wave"]) then
+                        projectile = entity_name .. "-wave"
+                    end
+
+                    local num_val = target_effects_dictionary[quality_level][i]["nested-result"][projectile].radius
+                    local suffix = ""
+                    local directive = "%d"
+                    if (num_val > 1000 ^ 3) then
+                        suffix = "B"
+                        num_val = num_val / (1000 ^ 3)
+                    elseif (num_val > 1000 ^ 2) then
+                        suffix = "M"
+                        num_val = num_val / (1000 ^ 2)
+                    elseif (num_val > 1000 ^ 1) then
+                        suffix = "k"
+                        num_val = num_val / (1000 ^ 1)
+                    end
+
+                    if (num_val % 1 ~= 0) then
+                        if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
+                            directive = "%.2f"
+                        else
+                            directive = "%.1f"
+                        end
+                    end
+
+                    quality_values[quality_level][order] =
+                    {
+                        name = { "quality-nested-result.aoe-size-1", },
+                        value = { "atomic-bomb-placeholder.aoe-size", string.format(directive, num_val) .. suffix, },
+                    }
+                    order = order + 1
+
+                    num_val = target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.radius
+                    suffix = ""
+                    directive = "%d"
+                    if (num_val > 1000 ^ 3) then
+                        suffix = "B"
+                        num_val = num_val / (1000 ^ 3)
+                    elseif (num_val > 1000 ^ 2) then
+                        suffix = "M"
+                        num_val = num_val / (1000 ^ 2)
+                    elseif (num_val > 1000 ^ 1) then
+                        suffix = "k"
+                        num_val = num_val / (1000 ^ 1)
+                    end
+
+                    if (num_val % 1 ~= 0) then
+                        if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
+                            directive = "%.2f"
+                        else
+                            directive = "%.1f"
+                        end
+                    end
+
+                    quality_values[quality_level][order] =
+                    {
+                        name = { "quality-nested-result.aoe-size-2", },
+                        value = { "atomic-bomb-placeholder.aoe-size", string.format(directive, num_val) .. suffix, },
+                    }
+                    order = order + 1
+
+                    num_val = target_effects_dictionary[quality_level][i]["nested-result"][projectile].repeat_count
+                    suffix = ""
+                    directive = "%d"
+                    if (num_val > 1000 ^ 3) then
+                        suffix = "B"
+                        num_val = num_val / (1000 ^ 3)
+                    elseif (num_val > 1000 ^ 2) then
+                        suffix = "M"
+                        num_val = num_val / (1000 ^ 2)
+                    elseif (num_val > 1000 ^ 1) then
+                        suffix = "k"
+                        num_val = num_val / (1000 ^ 1)
+                    end
+
+                    if (num_val % 1 ~= 0) then
+                        if (((num_val % 0.1) - (num_val % 0.01)) ~= 0) then
+                            directive = "%.2f"
+                        else
+                            directive = "%.1f"
+                        end
+                    end
+
+                    local target_effects = target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects
+                    local damage = target_effects.damage
+                    if (not damage) then
+                        damage = target_effects[1] and target_effects[1].damage
+                    end
+                    if (not damage) then goto continue end
+                    local num_val_2 = damage.amount
+                    local suffix_2 = ""
+                    local directive_2 = "%d"
+                    if (num_val_2 > 1000 ^ 3) then
+                        suffix_2 = "B"
+                        num_val_2 = num_val_2 / (1000 ^ 3)
+                    elseif (num_val_2 > 1000 ^ 2) then
+                        suffix_2 = "M"
+                        num_val_2 = num_val_2 / (1000 ^ 2)
+                    elseif (num_val_2 > 1000 ^ 1) then
+                        suffix_2 = "k"
+                        num_val_2 = num_val_2 / (1000 ^ 1)
+                    end
+
+                    if (num_val_2 % 1 ~= 0) then
+                        if (((num_val_2 % 0.1) - (num_val_2 % 0.01)) ~= 0) then
+                            directive_2 = "%.2f"
+                        else
+                            directive_2 = "%.1f"
+                        end
+                    end
+
+                    if (target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects.type) then
                         quality_values[quality_level][order] =
                         {
                             name = { "quality-nested-result.damage", },
-                            value = { "atomic-bomb-placeholder.damage-mult", string.format(directive, num_val) .. suffix, string.format(directive_2, num_val_2) .. suffix_2, "", { "damage-type." .. v.damage.type } },
+                            value = { "atomic-bomb-placeholder.damage-mult", string.format(directive, num_val) .. suffix, string.format(directive_2, num_val_2) .. suffix_2, "", { "damage-type." .. target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects.damage.type } },
                         }
                         order = order + 1
+                    elseif (#target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects > 0) then
+                        for k, v in pairs(target_effects_dictionary[quality_level][i]["nested-result"][projectile].projectile.action_delivery.target_effects) do
+                            quality_values[quality_level][order] =
+                            {
+                                name = { "quality-nested-result.damage", },
+                                value = { "atomic-bomb-placeholder.damage-mult", string.format(directive, num_val) .. suffix, string.format(directive_2, num_val_2) .. suffix_2, "", { "damage-type." .. v.damage.type } },
+                            }
+                            order = order + 1
+                        end
                     end
-                end
 
-                :: continue ::
+                    :: continue ::
+                end
             end
         end
 
@@ -471,7 +474,9 @@ function data_utils.create_custom_tooltip_quality_effects_atomic(params)
         quality_level = "normal"
         while quality_level ~= nil and object_names.dictionary[prefix .. quality_level] do
 
-            custom_tooltip.quality_values[quality_level] = quality_values[quality_level][i].value
+            if (quality_values and quality_values[quality_level] and quality_values[quality_level][i]) then
+                custom_tooltip.quality_values[quality_level] = quality_values[quality_level][i].value
+            end
 
             quality_level = qualities[quality_level].next
         end
