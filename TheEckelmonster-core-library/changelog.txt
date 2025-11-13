@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.2
+Date: 2025-11-13
+  Bug Fixes:
+    - Fixed startup errors related to missing nil checks when creating custom quality tooltips
+---------------------------------------------------------------------------------------------------
 Version: 0.1.1
 Date: 2025-11-05
   Bug Fixes:
